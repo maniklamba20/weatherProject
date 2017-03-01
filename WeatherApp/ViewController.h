@@ -10,6 +10,7 @@
 
 @interface ViewController : UIViewController
 
+-(NSString*)convertUnixEpocTimeToEst:(NSString*)unixDate;
 
 @end
 
