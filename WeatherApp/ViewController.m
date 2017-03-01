@@ -148,27 +148,14 @@
         });
     });
     
-    
-    
 
         self.maxTempLabel.text = [NSString stringWithFormat:@"%0.1f F",[self TempConversionFor:[[[dictInfo valueForKey:@"main"] valueForKey:@"temp_max"] floatValue]]];
-    self.minTempLabel.text = [NSString stringWithFormat:@"%0.1f F",[self TempConversionFor:[[[dictInfo valueForKey:@"main"] valueForKey:@"temp_min"] floatValue]]];
+        self.minTempLabel.text = [NSString stringWithFormat:@"%0.1f F",[self TempConversionFor:[[[dictInfo valueForKey:@"main"] valueForKey:@"temp_min"] floatValue]]];
         self.humidityLabel.text = [NSString stringWithFormat:@"%@ %%",[[dictInfo valueForKey:@"main"] valueForKey:@"humidity"]];
         self.pressureLabel.text = [NSString stringWithFormat:@"%@ hpa",[[dictInfo valueForKey:@"main"] valueForKey:@"pressure"]];
         self.windLabel.text = [NSString stringWithFormat:@"%@ m/s",[[dictInfo valueForKey:@"wind"] valueForKey:@"speed"]];
-    
-        self.sunsetLabel.text = [NSString stringWithFormat:@"%@",[[dictInfo valueForKey:@"sys"] valueForKey:@"sunset"]];
-        self.sunriseLabel.text = [NSString stringWithFormat:@"%@",[[dictInfo valueForKey:@"sys"] valueForKey:@"sunrise"]];
-    
-    
-    NSTimeZone *inputTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    NSDateFormatter *inputDateFormatter = [[NSDateFormatter alloc] init];
-    [inputDateFormatter setTimeZone:inputTimeZone];
-    NSString *dateFormat = @"yyyyMMdd-HHmmss";
-    [inputDateFormatter setDateFormat:dateFormat];
-    NSDate *date = [inputDateFormatter dateFromString:self.sunsetLabel.text];
-
-    NSLog(@"%@",date);
+        self.sunriseLabel.text = [NSString stringWithFormat:@"%@", [self convertUnixEpocTimeToEst:[[dictInfo valueForKey:@"sys"] valueForKey:@"sunrise"]]];
+        self.sunsetLabel.text = [NSString stringWithFormat:@"%@", [self convertUnixEpocTimeToEst:[[dictInfo valueForKey:@"sys"] valueForKey:@"sunset"]]];
     
     
 }
@@ -188,7 +175,15 @@
     return (tempK*9/5)-459.67;
 }
 
-
+-(NSString*)convertUnixEpocTimeToEst:(NSString*)unixDate{
+    NSTimeInterval seconds = [unixDate doubleValue];
+    // Create NSDate object
+    NSDate *epochNSDate = [[NSDate alloc] initWithTimeIntervalSince1970:seconds];
+    // Use NSDateFormatter to display epochNSDate in local time zone
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH:mm"];
+    return [dateFormatter stringFromDate:epochNSDate];
+}
 
 
 @end
